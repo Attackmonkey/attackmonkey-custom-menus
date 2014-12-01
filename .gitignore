@@ -22,3 +22,7 @@ AttackMonkey.CustomMenus/obj/Release/AttackMonkey.CustomMenus.dll
 AttackMonkey.CustomMenus/obj/Release/AttackMonkey.CustomMenus.pdb
 AttackMonkey.CustomMenus/obj/Release/DesignTimeResolveAssemblyReferencesInput.cache
 AttackMonkey.CustomMenus/obj/Release/ResolveAssemblyReference.cache
+AttackMonkey.CustomMenus/App_Data/NuGetBackup/*
+AttackMonkey.CustomMenus/bin/*
+AttackMonkey.CustomMenus/obj/*
+packages/*
