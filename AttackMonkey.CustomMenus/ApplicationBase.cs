@@ -147,16 +147,26 @@ namespace AttackMonkey.CustomMenus
 						nodeId = media.Id;
 						path = media.Path;
 					}
+					else if (e.NodeId == "-1")
+					{
+						//it's the root node
+						nodeId = -1;
+						path = "-1";
+					}
 
 					//only carry on if we have a node id greater than 0
 					if (nodeId != 0)
 					{
+						if (Config.Instance.ConfigEntries.Any(o => o.NodeId == nodeId && o.DocTypeAlias == sender.TreeAlias))
+						{
+							config = Config.Instance.ConfigEntries.First(o => o.NodeId == nodeId && o.DocTypeAlias == sender.TreeAlias);
+						}
 						if (Config.Instance.ConfigEntries.Any(o => o.DocTypeAlias == alias))
 						{
 							//doctype match, get the config item
 							config = Config.Instance.ConfigEntries.First(o => o.DocTypeAlias == alias);
 						}
-						else if (Config.Instance.ConfigEntries.Any(o => o.NodeId == nodeId))
+						else if (Config.Instance.ConfigEntries.Any(o => o.NodeId == nodeId && string.IsNullOrEmpty(o.DocTypeAlias)))
 						{
 							//node id match, get the config item
 							config = Config.Instance.ConfigEntries.First(o => o.NodeId == nodeId);

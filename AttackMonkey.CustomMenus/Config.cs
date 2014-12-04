@@ -114,7 +114,7 @@ namespace AttackMonkey.CustomMenus
 				
 				item.DocTypeAlias = node.Attributes["docTypeAlias"].Value;
 
-				if (string.IsNullOrEmpty(item.DocTypeAlias))
+				if (string.IsNullOrEmpty(item.DocTypeAlias) || (!string.IsNullOrEmpty(item.DocTypeAlias) && (item.DocTypeAlias == "content" || item.DocTypeAlias == "media")))
 				{
 					item.NodeId = Convert.ToInt32(node.Attributes["nodeId"].Value);
 				}

@@ -26,3 +26,5 @@ AttackMonkey.CustomMenus/App_Data/NuGetBackup/*
 AttackMonkey.CustomMenus/bin/*
 AttackMonkey.CustomMenus/obj/*
 packages/*
+AttackMonkey.CustomMenus/obj/Release/AttackMonkey.CustomMenus.csprojResolveAssemblyReference.cache
+AttackMonkey.CustomMenus/obj/Release/*
