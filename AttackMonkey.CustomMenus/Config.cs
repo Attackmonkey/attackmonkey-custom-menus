@@ -6,6 +6,7 @@ using System.Xml;
 using System.Web;
 using umbraco.interfaces;
 using System.Collections;
+using umbraco.BusinessLogic.Actions;
 
 namespace AttackMonkey.CustomMenus
 {
@@ -140,7 +141,7 @@ namespace AttackMonkey.CustomMenus
 							if (actionAlias == "separator")
 							{
 								//if it's the context separator, add manually, as there's no alias on that item
-								item.MenuItems.Add(umbraco.BusinessLogic.Actions.ContextMenuSeperator.Instance);
+								item.MenuItems.Add(ContextMenuSeperator.Instance);
 							}
 							else if (!string.IsNullOrEmpty(actionAlias))
 							{
@@ -167,7 +168,7 @@ namespace AttackMonkey.CustomMenus
 							if (actionAlias == "separator")
 							{
 								//if it's the context separator, add manually, as there's no alias on that item
-								item.RemoveMenuItems.Add(umbraco.BusinessLogic.Actions.ContextMenuSeperator.Instance);
+								item.RemoveMenuItems.Add(ContextMenuSeperator.Instance);
 							}
 							else if (!string.IsNullOrEmpty(actionAlias))
 							{

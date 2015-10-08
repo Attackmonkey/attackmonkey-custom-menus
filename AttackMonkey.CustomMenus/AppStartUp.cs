@@ -6,10 +6,15 @@ using System.Web;
 using System.IO;
 using Umbraco.Core;
 using umbraco.interfaces;
+using umbraco.BasePages;
+using umbraco.BusinessLogic;
+using umbraco;
+using umbraco.BusinessLogic.Actions;
+using Umbraco.Web.Models.Trees;
 
 namespace AttackMonkey.CustomMenus
 {
-	public class ApplicationBase : IApplicationEventHandler
+	public class AppStartUp : IApplicationEventHandler
 	{
 		public void OnApplicationInitialized(UmbracoApplicationBase umbracoApplication, Umbraco.Core.ApplicationContext applicationContext)
 		{
@@ -44,7 +49,7 @@ namespace AttackMonkey.CustomMenus
 		void ContentTreeController_TreeNodesRendering(Umbraco.Web.Trees.TreeControllerBase sender, Umbraco.Web.Trees.TreeNodesRenderingEventArgs e)
 		{
 			//if they've set the ignore for Admins option, don't parse these rules
-			if (!(Config.Instance.IgnoreForAdmin && umbraco.BusinessLogic.User.GetCurrent().IsAdmin()))
+			if (!(Config.Instance.IgnoreForAdmin && User.GetCurrent().IsAdmin()))
 			{
 				foreach (var node in e.Nodes)
 				{
@@ -118,7 +123,7 @@ namespace AttackMonkey.CustomMenus
 		void SetCustomMenus(Umbraco.Web.Trees.TreeControllerBase sender, Umbraco.Web.Trees.MenuRenderingEventArgs e)
 		{
 			//if they've set the ignore for Admins option, don't parse these rules
-			if (!(Config.Instance.IgnoreForAdmin && umbraco.BusinessLogic.User.GetCurrent().IsAdmin()))
+			if (!(Config.Instance.IgnoreForAdmin && User.GetCurrent().IsAdmin()))
 			{
 				//only call if the node has a menu in the first place
 				if (e.Menu != null && (sender.TreeAlias == "content" || sender.TreeAlias == "media"))
@@ -175,21 +180,51 @@ namespace AttackMonkey.CustomMenus
 						if (config != null)
 						{
 							//first clear the current menu items, but only if there are things we can do with it
+							var oldMenu = new MenuItemCollection(e.Menu.Items);
+
 							if (config.MenuItems.Count > 0)
 							{
 								e.Menu.Items.Clear();
 							}
-
 							//get the list of actions the user is allowed to do on this node.
-							List<IAction> allowedActions = umbraco.BusinessLogic.Actions.Action.FromString(umbraco.BusinessLogic.User.GetCurrent().GetPermissions(path));
+							List<IAction> allowedActions = umbraco.BusinessLogic.Actions.Action.FromString(User.GetCurrent().GetPermissions(path));
 
 							//now loop through and add the items from the list, checking that the current user has permissions for the item in the first place
+							var index = 0;
+
 							foreach (var action in config.MenuItems)
 							{
 								if (!action.CanBePermissionAssigned || (action.CanBePermissionAssigned && allowedActions.Contains(action)))
 								{
-									e.Menu.Items.Add(new Umbraco.Web.Models.Trees.MenuItem(action));
+									if (action.Alias == ContextMenuSeperator.Instance.Alias)
+									{
+										//do nothing, as it's applied to the previous menu item, now
+									}
+									else
+									{
+										var showSeparator = false;
+
+										if (index > 0)
+										{
+											if (config.MenuItems[index - 1].Alias == ContextMenuSeperator.Instance.Alias)
+											{
+												showSeparator = true;
+											}
+										}
+
+										var menuItem = oldMenu.Items.FirstOrDefault(a => a.Alias == action.Alias);
+
+										if (menuItem != null)
+										{
+											menuItem.SeperatorBefore = showSeparator;
+
+											e.Menu.Items.Add(menuItem);
+										}
+									}
+
 								}
+
+								index++;
 							}
 
 							//loop through the remove menu items and remove them
